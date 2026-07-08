@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Chandan Kumar — Lead Data Scientist · IBM Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous"/>
+<style>
+/* ── RESET & TOKENS ── */
+:root{
+  --navy:#0B1D3A; --blue:#1A4FA0; --blue-l:#2563EB;
+  --teal:#0EA5C2; --teal-l:#E0F7FA;
+  --amber:#F59E0B; --amber-l:#FFF3CD;
+  --green:#10B981; --purple:#8B5CF6;
+  --red:#EF4444;
+  --ink:#F0F4FF; --ink2:#A8B8D8; --ink3:#64748B;
+  --bg:#060D1A; --bg2:#0D1B2E; --bg3:#112240;
+  --card:#0F1F38; --card2:#162848;
+  --border:rgba(255,255,255,.07);
+  --glow:rgba(14,165,194,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+::selection{background:rgba(14,165,194,.3);}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(6,13,26,.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:60px;
+  transition:all .3s;
+}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--teal);}
+.nav-logo span{color:var(--ink2);}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{font-size:13px;font-weight:500;color:var(--ink2);transition:color .2s;letter-spacing:.3px;}
+.nav-links a:hover{color:var(--teal);}
+.nav-cta{background:var(--teal);color:#fff;padding:8px 20px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.5px;transition:all .2s;}
+.nav-cta:hover{background:#0891B2;transform:translateY(-1px);}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;padding:120px 5% 80px;
+  display:flex;align-items:center;gap:60px;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(14,165,194,.08) 0%,transparent 70%),
+             radial-gradient(ellipse 40% 40% at 80% 80%,rgba(37,99,235,.06) 0%,transparent 60%),
+             var(--bg);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230EA5C2' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events:none;
+}
+.hero-left{flex:1;min-width:0;}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(14,165,194,.1);border:1px solid rgba(14,165,194,.2);
+  border-radius:20px;padding:5px 14px;margin-bottom:24px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--teal);letter-spacing:.8px;
+}
+.hero-eyebrow::before{content:'';width:6px;height:6px;background:var(--teal);border-radius:50%;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hero-name{font-family:'Inter',sans-serif;font-size:clamp(42px,6vw,68px);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:12px;}
+.hero-name .first{color:var(--ink);}
+.hero-name .last{
+  background:linear-gradient(135deg,var(--teal),var(--blue-l));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-tagline{font-size:clamp(16px,2vw,20px);color:var(--ink2);font-weight:400;margin-bottom:32px;max-width:540px;line-height:1.5;}
+.hero-tagline strong{color:var(--ink);font-weight:600;}
+.hero-desc{font-size:14px;color:var(--ink3);line-height:1.7;max-width:520px;margin-bottom:36px;}
+
+/* Terminal block */
+.terminal{
+  background:#020810;border:1px solid rgba(14,165,194,.2);
+  border-radius:10px;padding:16px 20px;margin-bottom:36px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  box-shadow:0 0 40px rgba(14,165,194,.06);max-width:520px;
+}
+.term-bar{display:flex;gap:6px;margin-bottom:12px;}
+.term-dot{width:10px;height:10px;border-radius:50%;}
+.term-dot.r{background:#EF4444;} .term-dot.y{background:#F59E0B;} .term-dot.g{background:#10B981;}
+.term-line{line-height:1.8;}
+.term-line .prompt{color:var(--teal);}
+.term-line .cmd{color:var(--ink);}
+.term-line .val{color:var(--amber);}
+.term-line .num{color:#A78BFA;}
+.term-line .str{color:#86EFAC;}
+.term-line .comment{color:var(--ink3);}
+
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-primary{
+  background:var(--teal);color:#fff;padding:13px 28px;border-radius:8px;
+  font-size:13px;font-weight:700;letter-spacing:.4px;
+  transition:all .2s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{background:#0891B2;transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,194,.3);}
+.btn-secondary{
+  background:transparent;color:var(--teal);padding:13px 28px;border-radius:8px;
+  border:1.5px solid rgba(14,165,194,.4);font-size:13px;font-weight:600;
+  transition:all .2s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-secondary:hover{background:rgba(14,165,194,.08);border-color:var(--teal);}
+
+/* Hero right — stat cards */
+.hero-right{flex-shrink:0;display:flex;flex-direction:column;gap:14px;width:260px;}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:16px 18px;display:flex;align-items:center;gap:14px;
+  transition:all .3s;
+}
+.stat-card:hover{border-color:rgba(14,165,194,.3);transform:translateX(-4px);background:var(--card2);}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.stat-icon.tl{background:rgba(14,165,194,.12);}
+.stat-icon.am{background:rgba(245,158,11,.12);}
+.stat-icon.pu{background:rgba(139,92,246,.12);}
+.stat-icon.gn{background:rgba(16,185,129,.12);}
+.stat-icon.bl{background:rgba(37,99,235,.12);}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--ink);line-height:1;}
+.stat-lbl{font-size:11px;color:var(--ink2);margin-top:2px;}
+
+/* ── TICKER ── */
+.ticker{
+  background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:12px 0;overflow:hidden;position:relative;
+}
+.ticker-track{display:flex;gap:0;animation:ticker 35s linear infinite;width:max-content;}
+.ticker:hover .ticker-track{animation-play-state:paused;}
+.ticker-item{
+  display:flex;align-items:center;gap:8px;padding:0 28px;
+  font-size:12px;font-weight:600;color:var(--ink2);letter-spacing:.3px;white-space:nowrap;
+}
+.ticker-item .dot{color:var(--teal);font-size:8px;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ── SECTION COMMONS ── */
+section{padding:90px 5%;}
+.s-label{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;
+}
+.s-title{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-1px;line-height:1.15;margin-bottom:16px;}
+.s-title em{color:var(--teal);font-style:normal;}
+.s-sub{font-size:15px;color:var(--ink2);max-width:560px;line-height:1.7;margin-bottom:56px;}
+.divider{width:48px;height:3px;background:linear-gradient(90deg,var(--teal),var(--blue-l));border-radius:2px;margin-bottom:20px;}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.about-text p{font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:16px;}
+.about-text p strong{color:var(--ink);}
+.badge-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;}
+.badge{
+  display:flex;align-items:center;gap:8px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:10px 14px;font-size:12px;
+  transition:all .2s;
+}
+.badge:hover{border-color:rgba(14,165,194,.3);background:var(--card2);}
+.badge-icon{font-size:16px;}
+.badge-text strong{display:block;font-size:12px;font-weight:700;color:var(--ink);}
+.badge-text span{font-size:10.5px;color:var(--ink2);}
+.about-stats{display:flex;flex-direction:column;gap:16px;}
+.about-stat{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:18px 20px;display:flex;align-items:center;gap:16px;
+  transition:all .2s;
+}
+.about-stat:hover{border-color:rgba(14,165,194,.3);}
+.about-stat-num{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--teal);line-height:1;flex-shrink:0;width:80px;}
+.about-stat-text strong{display:block;font-size:13px;font-weight:700;color:var(--ink);}
+.about-stat-text span{font-size:11.5px;color:var(--ink2);}
+
+/* ── EXPERIENCE TIMELINE ── */
+.exp-layout{display:grid;grid-template-columns:280px 1fr;gap:48px;}
+.exp-timeline{position:relative;}
+.exp-timeline::before{content:'';position:absolute;left:20px;top:4px;bottom:0;width:1px;background:linear-gradient(180deg,var(--teal),transparent);}
+.exp-tab{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border-radius:10px;cursor:pointer;margin-bottom:6px;
+  transition:all .2s;border:1px solid transparent;position:relative;
+}
+.exp-tab:hover{background:var(--card);border-color:var(--border);}
+.exp-tab.active{background:var(--card2);border-color:rgba(14,165,194,.25);}
+.exp-tab-dot{
+  width:10px;height:10px;border-radius:50%;background:var(--ink3);
+  flex-shrink:0;position:relative;z-index:1;transition:all .2s;
+}
+.exp-tab.active .exp-tab-dot{background:var(--teal);box-shadow:0 0 10px rgba(14,165,194,.4);}
+.exp-tab-info{min-width:0;}
+.exp-tab-co{font-size:13px;font-weight:700;color:var(--ink);line-height:1.3;}
+.exp-tab-period{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--teal);}
+.exp-content{display:none;}
+.exp-content.active{display:block;}
+.exp-header{margin-bottom:20px;}
+.exp-company{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.exp-role{font-size:14px;font-weight:600;color:var(--teal);}
+.exp-meta{font-size:12px;color:var(--ink2);margin-top:4px;}
+.exp-proj{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:18px 20px;margin-bottom:14px;
+  border-left:3px solid var(--teal);
+  transition:all .2s;
+}
+.exp-proj:hover{border-color:rgba(14,165,194,.4);background:var(--card2);}
+.exp-proj-name{font-size:13px;font-weight:700;color:var(--blue-l);margin-bottom:10px;}
+.exp-proj-name .sublabel{font-size:11px;font-weight:400;color:var(--ink3);font-style:italic;margin-left:6px;}
+.bullet{font-size:12.5px;color:var(--ink2);line-height:1.7;margin-bottom:5px;padding-left:14px;position:relative;}
+.bullet::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--ink3);}
+.bullet .lbl-c{color:var(--ink3);font-weight:700;}
+.bullet .lbl-co{color:var(--ink);font-weight:700;}
+.bullet .lbl-i{color:var(--teal);font-weight:700;}
+.bullet .bk{color:var(--ink);font-weight:600;}
+.bullet .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber);font-weight:700;}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+.chip{background:rgba(37,99,235,.12);color:#93C5FD;border:1px solid rgba(37,99,235,.2);border-radius:4px;padding:2px 8px;font-size:10.5px;font-weight:600;}
+
+/* ── PROJECTS ── */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px;}
+.proj-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;transition:all .3s;display:flex;flex-direction:column;
+}
+.proj-card:hover{transform:translateY(-6px);border-color:rgba(14,165,194,.3);box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.proj-visual{
+  height:140px;display:flex;align-items:center;justify-content:center;
+  font-size:28px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--bg3),var(--card2));
+}
+.proj-visual svg{width:100%;height:100%;position:absolute;inset:0;opacity:.6;}
+.proj-visual .proj-emoji{position:relative;z-index:1;font-size:36px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5));}
+.proj-body{padding:20px;flex:1;display:flex;flex-direction:column;}
+.proj-co{font-size:10.5px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.proj-title{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:8px;line-height:1.3;}
+.proj-desc{font-size:12.5px;color:var(--ink2);line-height:1.65;margin-bottom:14px;flex:1;}
+.proj-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.proj-metric{background:var(--bg2);border-radius:8px;padding:8px 10px;text-align:center;}
+.proj-metric .pm-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--amber);}
+.proj-metric .pm-lbl{font-size:9.5px;color:var(--ink2);margin-top:1px;}
+.proj-stack{display:flex;flex-wrap:wrap;gap:4px;}
+.ps{background:rgba(14,165,194,.1);color:var(--teal);border:1px solid rgba(14,165,194,.15);border-radius:3px;padding:2px 7px;font-size:10px;font-weight:600;}
+
+/* ── SKILLS ── */
+.skills-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+.skill-cat-title{font-size:13px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.skill-bar-wrap{margin-bottom:14px;}
+.skill-bar-label{display:flex;justify-content:space-between;margin-bottom:5px;}
+.skill-bar-name{font-size:12.5px;font-weight:600;color:var(--ink);}
+.skill-bar-pct{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal);font-weight:700;}
+.skill-bar-track{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.skill-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--blue-l));transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.skill-pills-section{margin-bottom:32px;}
+.skill-pills-title{font-size:12px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;}
+.skill-pills{display:flex;flex-wrap:wrap;gap:6px;}
+.sp{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--ink2);transition:all .2s;}
+.sp:hover{background:var(--card2);border-color:rgba(14,165,194,.25);color:var(--ink);}
+
+/* ── CERTIFICATIONS ── */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.cert-item{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:12px 14px;display:flex;align-items:center;gap:10px;
+  transition:all .2s;
+}
+.cert-item:hover{border-color:rgba(245,158,11,.3);background:var(--card2);}
+.cert-icon{font-size:18px;flex-shrink:0;}
+.cert-inst{font-size:10.5px;font-weight:700;color:var(--amber);}
+.cert-course{font-size:11px;color:var(--ink2);margin-top:1px;}
+
+/* ── CONTACT ── */
+.contact-wrap{max-width:800px;margin:0 auto;text-align:center;}
+.contact-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:40px 0;}
+.contact-card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:24px 20px;transition:all .2s;cursor:pointer;text-decoration:none;display:block;
+}
+.contact-card:hover{border-color:rgba(14,165,194,.3);transform:translateY(-4px);}
+.contact-card-icon{font-size:24px;margin-bottom:10px;}
+.contact-card-label{font-size:11px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+.contact-card-val{font-size:13px;font-weight:600;color:var(--teal);}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:28px 5%;display:flex;align-items:center;justify-content:space-between;
+}
+.footer-left{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink3);}
+.footer-right{display:flex;gap:20px;}
+.footer-right a{font-size:12px;color:var(--ink3);transition:color .2s;}
+.footer-right a:hover{color:var(--teal);}
+
+/* ── SECTION BG VARIANTS ── */
+#experience{background:var(--bg2);}
+#skills{background:var(--bg);}
+#certifications{background:var(--bg2);}
+#contact{background:var(--bg);}
+
+/* ── ANIMATIONS ── */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){
+  .hero{flex-direction:column;padding:100px 5% 60px;}
+  .hero-right{width:100%;flex-direction:row;flex-wrap:wrap;}
+  .stat-card{flex:1;min-width:140px;}
+  .about-grid,.exp-layout,.skills-layout{grid-template-columns:1fr;}
+  .contact-cards{grid-template-columns:1fr;}
+  .nav-links{display:none;}
+  .exp-layout{grid-template-columns:1fr;}
+  .exp-tab{display:inline-flex;margin-right:6px;}
+  .exp-timeline::before{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">&lt;<span>CK</span> /&gt;</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Let's Talk</a></li>
+  </ul>
+  <a href="mailto:chandaniitismg@gmail.com" class="nav-cta">Hire Me</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Available for New Opportunities</div>
+    <h1 class="hero-name">
+      <span class="first">Chandan</span><br>
+      <span class="last">Kumar</span>
+    </h1>
+    <p class="hero-tagline">Lead Data Scientist · <strong>IBM Lab</strong> · Building AI that ships, scales, and holds.</p>
+    <p class="hero-desc">IIT Graduate &amp; Super 30 Alumni. 8+ years turning ambitious AI ideas into production systems — Agentic AI, LLM Fine-Tuning, Enterprise RAG, MLOps — running at global scale across IBM Watsonx, AWS, GCP &amp; Azure.</p>
+
+    <div class="terminal">
+      <div class="term-bar"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div>
+      <div class="term-line"><span class="prompt">➜ </span><span class="cmd">chandan_kumar</span> <span class="comment"># impact_summary.sh</span></div>
+      <div class="term-line"><span class="prompt">$ </span><span class="str">business_impact</span>=<span class="val">"$4M+ verified"</span></div>
+      <div class="term-line"><span class="prompt">$ </span><span class="str">production_deployments</span>=<span class="num">8+</span></div>
+      <div class="term-line"><span class="prompt">$ </span><span class="str">enterprise_pocs</span>=<span class="num">15+</span></div>
+      <div class="term-line"><span class="prompt">$ </span><span class="str">daily_api_calls</span>=<span class="val">"10M+"</span></div>
+      <div class="term-line"><span class="prompt">$ </span><span class="str">cloud_platforms</span>=<span class="val">"IBM · AWS · GCP · Azure"</span></div>
+      <div class="term-line"><span class="prompt">$ </span><span class="str">status</span>=<span class="val">"open_to_opportunities"</span></div>
+    </div>
+
+    <div class="hero-btns">
+      <a href="#projects" class="btn-primary"><i class="fas fa-rocket"></i> View My Work</a>
+      <a href="#contact" class="btn-secondary"><i class="fas fa-envelope"></i> Get In Touch</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="stat-card"><div class="stat-icon tl">🤖</div><div><div class="stat-num">10M+</div><div class="stat-lbl">Daily API Calls · Watsonx</div></div></div>
+    <div class="stat-card"><div class="stat-icon am">💰</div><div><div class="stat-num">$4M+</div><div class="stat-lbl">Verified Business Impact</div></div></div>
+    <div class="stat-card"><div class="stat-icon pu">🚀</div><div><div class="stat-num">8+</div><div class="stat-lbl">Production Deployments</div></div></div>
+    <div class="stat-card"><div class="stat-icon gn">🔬</div><div><div class="stat-num">15+</div><div class="stat-lbl">Enterprise AI POCs</div></div></div>
+    <div class="stat-card"><div class="stat-icon bl">☁️</div><div><div class="stat-num">4</div><div class="stat-lbl">Cloud Platforms Mastered</div></div></div>
+  </div>
+</section>
+
+<!-- ── TICKER ── -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker">
+    <div class="ticker-item"><span class="dot">◆</span>IBM Watsonx Orchestrate</div>
+    <div class="ticker-item"><span class="dot">◆</span>LangGraph</div>
+    <div class="ticker-item"><span class="dot">◆</span>AutoGen</div>
+    <div class="ticker-item"><span class="dot">◆</span>MCP Architecture</div>
+    <div class="ticker-item"><span class="dot">◆</span>AWS Bedrock</div>
+    <div class="ticker-item"><span class="dot">◆</span>AWS SageMaker</div>
+    <div class="ticker-item"><span class="dot">◆</span>Azure ML Studio</div>
+    <div class="ticker-item"><span class="dot">◆</span>GCP Vertex AI</div>
+    <div class="ticker-item"><span class="dot">◆</span>LLM Fine-Tuning (LoRA / RLHF)</div>
+    <div class="ticker-item"><span class="dot">◆</span>Enterprise RAG · HyDE-RAG</div>
+    <div class="ticker-item"><span class="dot">◆</span>Agentic AI Orchestration</div>
+    <div class="ticker-item"><span class="dot">◆</span>Hugging Face Transformers</div>
+    <div class="ticker-item"><span class="dot">◆</span>OpenAI GPT-4o</div>
+    <div class="ticker-item"><span class="dot">◆</span>Anthropic Claude</div>
+    <div class="ticker-item"><span class="dot">◆</span>IBM Granite</div>
+    <div class="ticker-item"><span class="dot">◆</span>Python · PyTorch · TensorFlow</div>
+    <div class="ticker-item"><span class="dot">◆</span>MLOps · Kubeflow · MLflow</div>
+    <div class="ticker-item"><span class="dot">◆</span>Kubernetes · Docker · Terraform</div>
+    <!-- duplicate for seamless loop -->
+    <div class="ticker-item"><span class="dot">◆</span>IBM Watsonx Orchestrate</div>
+    <div class="ticker-item"><span class="dot">◆</span>LangGraph</div>
+    <div class="ticker-item"><span class="dot">◆</span>AutoGen</div>
+    <div class="ticker-item"><span class="dot">◆</span>MCP Architecture</div>
+    <div class="ticker-item"><span class="dot">◆</span>AWS Bedrock</div>
+    <div class="ticker-item"><span class="dot">◆</span>AWS SageMaker</div>
+    <div class="ticker-item"><span class="dot">◆</span>Azure ML Studio</div>
+    <div class="ticker-item"><span class="dot">◆</span>GCP Vertex AI</div>
+    <div class="ticker-item"><span class="dot">◆</span>LLM Fine-Tuning (LoRA / RLHF)</div>
+    <div class="ticker-item"><span class="dot">◆</span>Enterprise RAG · HyDE-RAG</div>
+    <div class="ticker-item"><span class="dot">◆</span>Agentic AI Orchestration</div>
+    <div class="ticker-item"><span class="dot">◆</span>Hugging Face Transformers</div>
+    <div class="ticker-item"><span class="dot">◆</span>OpenAI GPT-4o</div>
+    <div class="ticker-item"><span class="dot">◆</span>Anthropic Claude</div>
+    <div class="ticker-item"><span class="dot">◆</span>IBM Granite</div>
+    <div class="ticker-item"><span class="dot">◆</span>Python · PyTorch · TensorFlow</div>
+    <div class="ticker-item"><span class="dot">◆</span>MLOps · Kubeflow · MLflow</div>
+    <div class="ticker-item"><span class="dot">◆</span>Kubernetes · Docker · Terraform</div>
+  </div>
+</div>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="s-label">01 — About</div>
+  <div class="s-title">The analyst who bridges <em>AI and impact.</em></div>
+  <div class="divider"></div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm a <strong>Super 30 Alumni and IIT graduate</strong> with 8+ years building AI systems that don't just work in notebooks — they run in production, survive audits, and move business needles.</p>
+      <p>At <strong>IBM Lab</strong>, I lead the engineering of watsonx Orchestrate's Weave framework — the agentic AI lifecycle platform at the heart of IBM's enterprise AI strategy. I designed the full Build → Validate → Deploy arc, architected 60+ MCP connectors, and shipped from concept to 10M+ daily API calls in 14 months.</p>
+      <p>Before IBM: at <strong>Accenture</strong> I led GenAI consulting for NatWest Group (Ulster Bank), building LoRA fine-tuned LLMs and HyDE-RAG systems on AWS Bedrock that cut compliance query time by 70% and eliminated FCA/PRA violations. At <strong>Clean Harbors</strong> I built EPA-compliant hazardous waste classification and invoice audit systems on Azure ML — $1.25M in annual savings combined.</p>
+      <p>I've also delivered <strong>15+ enterprise AI POCs</strong> on IBM, AWS, GCP &amp; Azure — from agentic workflow sandboxing to multimodal AI — stress-testing ideas against real enterprise constraints before a line of production code gets written.</p>
+      <div class="badge-row">
+        <div class="badge"><span class="badge-icon">🎓</span><div class="badge-text"><strong>IIT (ISM) Dhanbad</strong><span>B.Tech · 2013–2017</span></div></div>
+        <div class="badge"><span class="badge-icon">🏆</span><div class="badge-text"><strong>Super 30 Alumni</strong><span>Anand Kumar · Patna</span></div></div>
+        <div class="badge"><span class="badge-icon">📍</span><div class="badge-text"><strong>Bengaluru, India</strong><span>Open to Global Roles</span></div></div>
+      </div>
+    </div>
+    <div class="about-stats">
+      <div class="about-stat"><div class="about-stat-num">8+</div><div class="about-stat-text"><strong>Years in AI/ML</strong><span>IBM Lab · Accenture · Clean Harbors</span></div></div>
+      <div class="about-stat"><div class="about-stat-num">$4M+</div><div class="about-stat-text"><strong>Verified Business Impact</strong><span>Across 6 named production deployments</span></div></div>
+      <div class="about-stat"><div class="about-stat-num">10M+</div><div class="about-stat-text"><strong>Daily API Calls</strong><span>Watsonx Orchestrate Weave · p99 &lt;200ms</span></div></div>
+      <div class="about-stat"><div class="about-stat-num">60+</div><div class="about-stat-text"><strong>Enterprise MCP Connectors</strong><span>SAP · Salesforce · ServiceNow · Workday</span></div></div>
+      <div class="about-stat"><div class="about-stat-num">1K+</div><div class="about-stat-text"><strong>Models Under Governance</strong><span>watsonx.governance · IBM OpenScale</span></div></div>
+      <div class="about-stat"><div class="about-stat-num">4</div><div class="about-stat-text"><strong>Cloud Platforms</strong><span>IBM · AWS · GCP · Azure — production &amp; POC</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ── -->
+<section id="experience">
+  <div class="s-label">02 — Experience</div>
+  <div class="s-title">Where I delivered <em>real outcomes.</em></div>
+  <div class="divider"></div>
+  <div class="exp-layout">
+    <div class="exp-timeline">
+      <div class="exp-tab active" onclick="showExp('ibm',this)">
+        <div class="exp-tab-dot"></div>
+        <div class="exp-tab-info">
+          <div class="exp-tab-co">IBM Lab</div>
+          <div class="exp-tab-period">Mar 2024 – Present</div>
+        </div>
+      </div>
+      <div class="exp-tab" onclick="showExp('accenture',this)">
+        <div class="exp-tab-dot"></div>
+        <div class="exp-tab-info">
+          <div class="exp-tab-co">Accenture</div>
+          <div class="exp-tab-period">Apr 2021 – Feb 2024</div>
+        </div>
+      </div>
+      <div class="exp-tab" onclick="showExp('capgemini',this)">
+        <div class="exp-tab-dot"></div>
+        <div class="exp-tab-info">
+          <div class="exp-tab-co">Capgemini</div>
+          <div class="exp-tab-period">Feb 2021 – Mar 2021</div>
+        </div>
+      </div>
+      <div class="exp-tab" onclick="showExp('clean',this)">
+        <div class="exp-tab-dot"></div>
+        <div class="exp-tab-info">
+          <div class="exp-tab-co">Clean Harbors</div>
+          <div class="exp-tab-period">Jun 2018 – Jan 2021</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <!-- IBM -->
+      <div id="exp-ibm" class="exp-content active">
+        <div class="exp-header">
+          <div class="exp-company">IBM Lab</div>
+          <div class="exp-role">Lead Data Scientist — Agentic AI R&D</div>
+          <div class="exp-meta">Bengaluru · Mar 2024 – Present</div>
+        </div>
+        <div class="exp-proj">
+          <div class="exp-proj-name">↳ watsonx Orchestrate — Weave<span class="sublabel">Agentic AI Lifecycle Platform · IBM Product</span></div>
+          <div class="bullet"><span class="lbl-c">Challenge:</span> No agentic AI framework existed at IBM — had to build it from scratch and ship before the market moved on.</div>
+          <div class="bullet"><span class="lbl-co">Contribution:</span> Led core engineering of the <span class="bk">Weave framework</span> — full Build→Validate→Deploy lifecycle, NL requirements parsed into workflow DAGs, <span class="bk">60+ enterprise MCP connectors</span> (SAP, Salesforce, ServiceNow, Workday) via OpenAPI transpilation with OAuth2/SAML.</div>
+          <div class="bullet"><span class="lbl-i">Impact:</span> Concept → production in <span class="num">14 months</span> · <span class="num">10M+</span> daily API calls · <span class="num">p99 &lt;200ms</span> · <span class="num">99.9%</span> uptime · <span class="num">$1.5M+</span> productivity gains · <span class="num">40%</span> inference cost reduction</div>
+          <div class="chips"><span class="chip">LangGraph</span><span class="chip">AutoGen</span><span class="chip">MCP</span><span class="chip">IBM Watsonx</span><span class="chip">OpenAPI</span><span class="chip">Kubernetes</span><span class="chip">Redis</span><span class="chip">Python</span></div>
+        </div>
+        <div class="exp-proj">
+          <div class="exp-proj-name">↳ watsonx.governance — Enterprise AI Risk &amp; Compliance<span class="sublabel">· IBM Product</span></div>
+          <div class="bullet"><span class="lbl-c">Challenge:</span> Hundreds of AI models in production with no governance — bias, drift, and regulatory breaches accumulating silently.</div>
+          <div class="bullet"><span class="lbl-co">Contribution:</span> Engineered integrated GRC stack — IBM OpenPages, IBM OpenScale, AI FactSheets, Governance Graph linking models to risk controls and regulations. Extended multi-cloud to AWS SageMaker and Azure ML.</div>
+          <div class="bullet"><span class="lbl-i">Impact:</span> <span class="num">1,000+</span> models governed · audit prep weeks→hours · data review cycles <span class="num">−58%</span> · <span class="num">200+</span> regulatory frameworks · IBM's flagship EU AI Act platform</div>
+          <div class="chips"><span class="chip">IBM OpenPages</span><span class="chip">IBM OpenScale</span><span class="chip">AI FactSheets</span><span class="chip">AIF360</span><span class="chip">SHAP/LIME</span><span class="chip">EU AI Act</span></div>
+        </div>
+      </div>
+
+      <!-- ACCENTURE -->
+      <div id="exp-accenture" class="exp-content">
+        <div class="exp-header">
+          <div class="exp-company">Accenture</div>
+          <div class="exp-role">Data Science Analyst — Strategy &amp; Consulting</div>
+          <div class="exp-meta">Gurugram · Apr 2021 – Feb 2024</div>
+        </div>
+        <div class="exp-proj">
+          <div class="exp-proj-name">↳ ASK UB — Intelligent Advisor Platform with HyDE-RAG<span class="sublabel">Client: Ulster Bank (NatWest Group)</span></div>
+          <div class="bullet"><span class="lbl-c">Challenge:</span> Two failure modes, one root cause — models not institution-aware. Advisors hallucinating on bank policy; compliance teams spending 4+ hrs/day on manual FCA/PRA search.</div>
+          <div class="bullet"><span class="lbl-co">Contribution:</span> LoRA fine-tuned LLM on Ulster Bank's corpus via AWS SageMaker Training Jobs; served via AWS Bedrock with HyDE-RAG — hypothetical answer generation → hybrid BM25+dense search across 50K+ regulatory docs in Amazon OpenSearch. Serverless via AWS Lambda + API Gateway.</div>
+          <div class="bullet"><span class="lbl-i">Impact:</span> Advisor resolution time <span class="num">−45%</span> · compliance query time <span class="num">−70%</span> · responses <span class="num">&lt;500ms</span> · <span class="num">zero</span> hallucination incidents · zero FCA/PRA violations · architecture reused across 3 Accenture engagements</div>
+          <div class="chips"><span class="chip">AWS Bedrock</span><span class="chip">AWS SageMaker</span><span class="chip">LoRA/PEFT</span><span class="chip">HyDE-RAG</span><span class="chip">Amazon OpenSearch</span><span class="chip">LangChain</span></div>
+        </div>
+        <div class="exp-proj">
+          <div class="exp-proj-name">↳ Facebook BI — Real-Time Content Moderation &amp; Ad Relevance<span class="sublabel">Client: Facebook · Accenture</span></div>
+          <div class="bullet"><span class="lbl-c">Challenge:</span> At Facebook's scale, a fractional drop in moderation recall means millions of harmful impressions live — and ad relevance degrading even slightly costs nine-figure revenue.</div>
+          <div class="bullet"><span class="lbl-co">Contribution:</span> Architected petabyte-scale real-time CV platform using CNNs on PyTorch with AWS SageMaker, Glue, Redshift, and Ray in multi-region active-active topology processing 1B+ images daily. Automated A/B testing and shadow deployments via AWS Step Functions.</div>
+          <div class="bullet"><span class="lbl-i">Impact:</span> Moderation recall <span class="num">+15%</span> · ad relevance <span class="num">+12%</span> · latency <span class="num">−60%</span> · rollback incidents <span class="num">−75%</span> · adopted by Facebook engineering as production reference architecture</div>
+          <div class="chips"><span class="chip">PyTorch CNN</span><span class="chip">AWS SageMaker</span><span class="chip">Amazon Kinesis</span><span class="chip">Ray</span><span class="chip">AWS Step Functions</span><span class="chip">Multi-Region Active-Active</span></div>
+        </div>
+      </div>
+
+      <!-- CAPGEMINI -->
+      <div id="exp-capgemini" class="exp-content">
+        <div class="exp-header">
+          <div class="exp-company">Capgemini</div>
+          <div class="exp-role">Analytics Process Lead</div>
+          <div class="exp-meta">Bengaluru · Feb 2021 – Mar 2021</div>
+        </div>
+        <div class="exp-proj">
+          <div class="exp-proj-name">↳ Enterprise Azure Analytics Architecture</div>
+          <div class="bullet">Designed end-to-end Azure analytics architecture — data ingestion, transformation, orchestration, and reporting workflows — delivering technical blueprints and implementation roadmaps for enterprise-scale analytics migration.</div>
+          <div class="chips"><span class="chip">Azure Data Factory</span><span class="chip">Azure Synapse</span><span class="chip">Power BI</span><span class="chip">Azure DevOps</span></div>
+        </div>
+      </div>
+
+      <!-- CLEAN HARBORS -->
+      <div id="exp-clean" class="exp-content">
+        <div class="exp-header">
+          <div class="exp-company">Clean Harbors</div>
+          <div class="exp-role">Data Scientist — AI/ML Engineering</div>
+          <div class="exp-meta">Hyderabad (India Technology Centre, Fortune 500 USA) · Jun 2018 – Jan 2021</div>
+        </div>
+        <div class="exp-proj">
+          <div class="exp-proj-name">↳ Waste Classification Code System (WCC)<span class="sublabel">EPA-Compliant Hazardous Waste ML Platform</span></div>
+          <div class="bullet"><span class="lbl-c">Challenge:</span> A single misclassified waste stream triggers a federal EPA violation — every classification made manually, every time.</div>
+          <div class="bullet"><span class="lbl-co">Contribution:</span> Hybrid CNN + rule-based engine on Azure ML Studio, synthetic data augmentation + SMOTE, MLOps monitoring with automated drift detection, SHAP explainability, REST API via Azure App Service with live Power BI dashboards.</div>
+          <div class="bullet"><span class="lbl-i">Impact:</span> <span class="num">100%</span> manual classification eliminated · rare-category F1 <span class="num">+28%</span> · misclassifications <span class="num">−40%</span> · throughput <span class="num">+22%</span> · <span class="num">$500K</span> annual regulatory savings · zero EPA violations</div>
+          <div class="chips"><span class="chip">Azure ML Studio</span><span class="chip">CNN</span><span class="chip">SMOTE</span><span class="chip">SHAP</span><span class="chip">Azure Data Factory</span><span class="chip">Power BI</span></div>
+        </div>
+        <div class="exp-proj">
+          <div class="exp-proj-name">↳ Invoice Audit Automation &amp; Revenue Protection<span class="sublabel">Intelligent Billing Prediction</span></div>
+          <div class="bullet"><span class="lbl-c">Challenge:</span> Finance losing $750K+ a year to billing errors hidden across thousands of service engagements.</div>
+          <div class="bullet"><span class="lbl-co">Contribution:</span> Multi-model ensemble on 47 domain-engineered billing features with automated retraining; closed-loop integration with WCC platform via Azure Data Factory; executive Power BI dashboards.</div>
+          <div class="bullet"><span class="lbl-i">Impact:</span> <span class="num">80%</span> audit workflows automated · accuracy <span class="num">&gt;94%</span> sustained · <span class="num">$750K</span> annual revenue protected · dispute resolution <span class="num">−50%</span></div>
+          <div class="chips"><span class="chip">Azure ML Studio</span><span class="chip">Gradient Boosting</span><span class="chip">Feature Engineering</span><span class="chip">Azure Data Factory</span><span class="chip">Power BI</span><span class="chip">SQL</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="s-label">03 — Projects</div>
+  <div class="s-title">Work that <em>speaks for itself.</em></div>
+  <div class="divider"></div>
+  <div class="proj-grid">
+
+    <div class="proj-card">
+      <div class="proj-visual" style="background:linear-gradient(135deg,#051525,#0D2040)">
+        <svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg"><circle cx="80" cy="70" r="36" fill="none" stroke="#0EA5C2" stroke-width="1.5" opacity=".5"/><circle cx="200" cy="70" r="36" fill="none" stroke="#2563EB" stroke-width="1.5" opacity=".5"/><circle cx="320" cy="70" r="36" fill="none" stroke="#8B5CF6" stroke-width="1.5" opacity=".5"/><line x1="116" y1="70" x2="164" y2="70" stroke="#0EA5C2" stroke-width="1.5" stroke-dasharray="4,2" opacity=".6"/><line x1="236" y1="70" x2="284" y2="70" stroke="#0EA5C2" stroke-width="1.5" stroke-dasharray="4,2" opacity=".6"/><text x="80" y="74" text-anchor="middle" font-size="9" fill="#0EA5C2" font-family="Inter,sans-serif" font-weight="700">Orchestrate</text><text x="200" y="74" text-anchor="middle" font-size="9" fill="#60A5FA" font-family="Inter,sans-serif" font-weight="700">Weave</text><text x="320" y="74" text-anchor="middle" font-size="9" fill="#A78BFA" font-family="Inter,sans-serif" font-weight="700">MCP</text></svg>
+        <div class="proj-emoji">🤖</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-co">IBM Lab · IBM Product</div>
+        <div class="proj-title">watsonx Orchestrate — Weave Agentic AI Framework</div>
+        <div class="proj-desc">Built IBM's reference multi-agent platform from scratch — NL→DAG workflow generation, 60+ enterprise MCP connectors, one-click deploy lifecycle. Concept to production in 14 months.</div>
+        <div class="proj-metrics">
+          <div class="proj-metric"><div class="pm-val">10M+</div><div class="pm-lbl">Daily API Calls</div></div>
+          <div class="proj-metric"><div class="pm-val">&lt;200ms</div><div class="pm-lbl">p99 Latency</div></div>
+          <div class="proj-metric"><div class="pm-val">$1.5M+</div><div class="pm-lbl">Productivity Gains</div></div>
+          <div class="proj-metric"><div class="pm-val">99.9%</div><div class="pm-lbl">Uptime</div></div>
+        </div>
+        <div class="proj-stack"><span class="ps">LangGraph</span><span class="ps">AutoGen</span><span class="ps">MCP</span><span class="ps">IBM Watsonx</span><span class="ps">OpenAPI</span><span class="ps">Kubernetes</span></div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-visual" style="background:linear-gradient(135deg,#050E20,#0B1A30)">
+        <svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="30" width="100" height="35" rx="5" fill="#1A4FA0" opacity=".7"/><rect x="40" y="75" width="100" height="35" rx="5" fill="#8B5CF6" opacity=".7"/><rect x="260" y="52" width="100" height="35" rx="5" fill="#10B981" opacity=".7"/><text x="90" y="52" text-anchor="middle" font-size="8" fill="white" font-family="Inter,sans-serif" font-weight="700">OpenScale</text><text x="90" y="96" text-anchor="middle" font-size="8" fill="white" font-family="Inter,sans-serif" font-weight="700">OpenPages</text><text x="310" y="73" text-anchor="middle" font-size="8" fill="white" font-family="Inter,sans-serif" font-weight="700">AI FactSheets</text><line x1="140" y1="47" x2="260" y2="65" stroke="#0EA5C2" stroke-dasharray="4,2" stroke-width="1"/><line x1="140" y1="92" x2="260" y2="72" stroke="#0EA5C2" stroke-dasharray="4,2" stroke-width="1"/></svg>
+        <div class="proj-emoji">🛡️</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-co">IBM Lab · IBM Product</div>
+        <div class="proj-title">watsonx.governance — Enterprise AI GRC Platform</div>
+        <div class="proj-desc">Engineered IBM's flagship AI governance stack — OpenScale monitoring, OpenPages regulatory mapping, AI FactSheets, Governance Graph. 1,000+ models under automated governance across IBM, AWS &amp; Azure.</div>
+        <div class="proj-metrics">
+          <div class="proj-metric"><div class="pm-val">1,000+</div><div class="pm-lbl">Models Governed</div></div>
+          <div class="proj-metric"><div class="pm-val">200+</div><div class="pm-lbl">Regulatory Frameworks</div></div>
+          <div class="proj-metric"><div class="pm-val">−58%</div><div class="pm-lbl">Data Review Cycles</div></div>
+          <div class="proj-metric"><div class="pm-val">Weeks→Hrs</div><div class="pm-lbl">Audit Prep Time</div></div>
+        </div>
+        <div class="proj-stack"><span class="ps">IBM OpenPages</span><span class="ps">OpenScale</span><span class="ps">AIF360</span><span class="ps">SHAP/LIME</span><span class="ps">EU AI Act</span></div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-visual" style="background:linear-gradient(135deg,#030C1A,#091525)">
+        <svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="55" width="70" height="30" rx="4" fill="#1A4FA0" opacity=".8"/><rect x="110" y="55" width="70" height="30" rx="4" fill="#0EA5C2" opacity=".8"/><rect x="200" y="40" width="70" height="60" rx="4" fill="#8B5CF6" opacity=".7"/><rect x="290" y="55" width="90" height="30" rx="4" fill="#10B981" opacity=".8"/><line x1="90" y1="70" x2="110" y2="70" stroke="#0EA5C2" stroke-width="1.5"/><line x1="180" y1="70" x2="200" y2="70" stroke="#0EA5C2" stroke-width="1.5"/><line x1="270" y1="70" x2="290" y2="70" stroke="#0EA5C2" stroke-width="1.5"/><text x="55" y="73" text-anchor="middle" font-size="7" fill="white" font-family="Inter,sans-serif">User</text><text x="145" y="73" text-anchor="middle" font-size="7" fill="white" font-family="Inter,sans-serif">HyDE-RAG</text><text x="235" y="68" text-anchor="middle" font-size="7" fill="white" font-family="Inter,sans-serif">OpenSearch</text><text x="235" y="78" text-anchor="middle" font-size="7" fill="white" font-family="Inter,sans-serif">50K+ docs</text><text x="335" y="73" text-anchor="middle" font-size="7" fill="white" font-family="Inter,sans-serif">LLM + LoRA</text></svg>
+        <div class="proj-emoji">🏦</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-co">Accenture · Client: Ulster Bank (NatWest Group)</div>
+        <div class="proj-title">ASK UB — Intelligent Bank Advisor with HyDE-RAG</div>
+        <div class="proj-desc">LoRA fine-tuned LLM on Ulster Bank's proprietary corpus + HyDE-RAG over 50K+ regulatory documents on AWS Bedrock. Made the model institution-aware — zero hallucinations, zero FCA violations.</div>
+        <div class="proj-metrics">
+          <div class="proj-metric"><div class="pm-val">−45%</div><div class="pm-lbl">Advisor Resolution Time</div></div>
+          <div class="proj-metric"><div class="pm-val">−70%</div><div class="pm-lbl">Compliance Query Time</div></div>
+          <div class="proj-metric"><div class="pm-val">ZERO</div><div class="pm-lbl">Hallucination Incidents</div></div>
+          <div class="proj-metric"><div class="pm-val">3×</div><div class="pm-lbl">Reused Across Engagements</div></div>
+        </div>
+        <div class="proj-stack"><span class="ps">AWS Bedrock</span><span class="ps">SageMaker</span><span class="ps">LoRA</span><span class="ps">HyDE-RAG</span><span class="ps">Amazon OpenSearch</span></div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-visual" style="background:linear-gradient(135deg,#040B18,#080F20)">
+        <svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg"><rect x="30" y="30" width="340" height="80" rx="6" fill="none" stroke="#1A4FA0" stroke-width="1" opacity=".4"/><text x="200" y="58" text-anchor="middle" font-size="28" fill="#F59E0B" font-family="JetBrains Mono,monospace" font-weight="700" opacity=".8">1B+</text><text x="200" y="78" text-anchor="middle" font-size="10" fill="#0EA5C2" font-family="Inter,sans-serif" font-weight="600">Images / Day · &lt;50ms Latency</text><text x="200" y="96" text-anchor="middle" font-size="9" fill="#A8B8D8" font-family="Inter,sans-serif">Multi-Region Active-Active · PyTorch CNN · Ray</text></svg>
+        <div class="proj-emoji">📸</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-co">Accenture · Client: Facebook</div>
+        <div class="proj-title">Facebook BI — Real-Time Content Moderation Platform</div>
+        <div class="proj-desc">Petabyte-scale real-time CNN inference platform on AWS SageMaker + Ray in multi-region active-active topology. 1B+ images/day at &lt;50ms. Moderation recall +15%, ad relevance +12%.</div>
+        <div class="proj-metrics">
+          <div class="proj-metric"><div class="pm-val">1B+</div><div class="pm-lbl">Images/Day Processed</div></div>
+          <div class="proj-metric"><div class="pm-val">&lt;50ms</div><div class="pm-lbl">Inference Latency</div></div>
+          <div class="proj-metric"><div class="pm-val">−60%</div><div class="pm-lbl">Processing Latency</div></div>
+          <div class="proj-metric"><div class="pm-val">−75%</div><div class="pm-lbl">Model Rollback Incidents</div></div>
+        </div>
+        <div class="proj-stack"><span class="ps">PyTorch</span><span class="ps">CNN</span><span class="ps">AWS SageMaker</span><span class="ps">Ray</span><span class="ps">Amazon Kinesis</span></div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-visual" style="background:linear-gradient(135deg,#040D1C,#0A1828)">
+        <svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg"><text x="200" y="55" text-anchor="middle" font-size="11" fill="#0EA5C2" font-family="JetBrains Mono,monospace" opacity=".7">HAZMAT CLASS: 001 → ✓</text><text x="200" y="73" text-anchor="middle" font-size="11" fill="#10B981" font-family="JetBrains Mono,monospace" opacity=".7">WASTE CODE: D001 → ✓</text><text x="200" y="91" text-anchor="middle" font-size="11" fill="#F59E0B" font-family="JetBrains Mono,monospace" opacity=".7">EPA COMPLIANCE → 100%</text></svg>
+        <div class="proj-emoji">☣️</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-co">Clean Harbors · Fortune 500 USA</div>
+        <div class="proj-title">Waste Classification Code System (WCC)</div>
+        <div class="proj-desc">Hybrid CNN + rule-based engine on Azure ML eliminating 100% manual EPA waste classification. SMOTE for class imbalance, SHAP explainability, automated drift detection. Zero federal violations post-deployment.</div>
+        <div class="proj-metrics">
+          <div class="proj-metric"><div class="pm-val">100%</div><div class="pm-lbl">Manual Work Eliminated</div></div>
+          <div class="proj-metric"><div class="pm-val">+28%</div><div class="pm-lbl">Rare Category F1</div></div>
+          <div class="proj-metric"><div class="pm-val">$500K</div><div class="pm-lbl">Annual Reg. Savings</div></div>
+          <div class="proj-metric"><div class="pm-val">ZERO</div><div class="pm-lbl">EPA Violations</div></div>
+        </div>
+        <div class="proj-stack"><span class="ps">Azure ML</span><span class="ps">CNN</span><span class="ps">SMOTE</span><span class="ps">SHAP</span><span class="ps">Azure Data Factory</span></div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-visual" style="background:linear-gradient(135deg,#040B18,#081520)">
+        <svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="40" width="80" height="24" rx="3" fill="#EF4444" opacity=".6"/><rect x="40" y="72" width="160" height="24" rx="3" fill="#F59E0B" opacity=".6"/><rect x="40" y="104" width="240" height="24" rx="3" fill="#10B981" opacity=".6"/><text x="280" y="30" font-size="8" fill="#0EA5C2" font-family="Inter,sans-serif">$750K protected</text><text x="280" y="44" font-size="8" fill="#A8B8D8" font-family="Inter,sans-serif">80% automated</text><text x="280" y="58" font-size="8" fill="#A8B8D8" font-family="Inter,sans-serif">&gt;94% accuracy</text></svg>
+        <div class="proj-emoji">📊</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-co">Clean Harbors · Fortune 500 USA</div>
+        <div class="proj-title">Invoice Audit Automation &amp; Revenue Protection</div>
+        <div class="proj-desc">Multi-model ensemble on 47 domain-engineered billing features protecting $750K annual revenue. Closed-loop integration with WCC platform. 80% of audit workflows fully automated.</div>
+        <div class="proj-metrics">
+          <div class="proj-metric"><div class="pm-val">$750K</div><div class="pm-lbl">Annual Revenue Protected</div></div>
+          <div class="proj-metric"><div class="pm-val">&gt;94%</div><div class="pm-lbl">Prediction Accuracy</div></div>
+          <div class="proj-metric"><div class="pm-val">80%</div><div class="pm-lbl">Workflows Automated</div></div>
+          <div class="proj-metric"><div class="pm-val">−50%</div><div class="pm-lbl">Dispute Resolution Time</div></div>
+        </div>
+        <div class="proj-stack"><span class="ps">Azure ML</span><span class="ps">Gradient Boosting</span><span class="ps">Azure Data Factory</span><span class="ps">Power BI</span><span class="ps">SQL</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section id="skills">
+  <div class="s-label">04 — Skills</div>
+  <div class="s-title">What I bring — <em>concretely.</em></div>
+  <div class="divider"></div>
+  <div class="skills-layout">
+    <div>
+      <div class="skill-cat-title">Core AI/ML Expertise</div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">Agentic AI &amp; Multi-Agent Orchestration</span><span class="skill-bar-pct">97%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:97%"></div></div></div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">LLM Fine-Tuning (LoRA / RLHF / DPO)</span><span class="skill-bar-pct">95%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:95%"></div></div></div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">Enterprise RAG &amp; Knowledge Systems</span><span class="skill-bar-pct">95%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:95%"></div></div></div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">Python (Expert)</span><span class="skill-bar-pct">98%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:98%"></div></div></div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">MLOps &amp; Drift-Aware Systems</span><span class="skill-bar-pct">92%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:92%"></div></div></div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">Computer Vision (CNN / ViT)</span><span class="skill-bar-pct">88%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:88%"></div></div></div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">AI Governance &amp; Responsible AI</span><span class="skill-bar-pct">93%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:93%"></div></div></div>
+
+      <div class="skill-cat-title" style="margin-top:28px">Cloud Platforms</div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">IBM Watsonx / IBM Cloud</span><span class="skill-bar-pct">97%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:97%"></div></div></div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">AWS (Bedrock · SageMaker · Glue)</span><span class="skill-bar-pct">92%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:92%"></div></div></div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">Azure ML / Azure OpenAI</span><span class="skill-bar-pct">90%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:90%"></div></div></div>
+      <div class="skill-bar-wrap"><div class="skill-bar-label"><span class="skill-bar-name">GCP Vertex AI / BigQuery</span><span class="skill-bar-pct">80%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" style="width:80%"></div></div></div>
+    </div>
+    <div>
+      <div class="skill-pills-section">
+        <div class="skill-pills-title">Agentic AI &amp; LLMs</div>
+        <div class="skill-pills"><span class="sp">LangGraph</span><span class="sp">AutoGen</span><span class="sp">CrewAI</span><span class="sp">LangChain</span><span class="sp">LlamaIndex</span><span class="sp">Semantic Kernel</span><span class="sp">MCP</span><span class="sp">GPT-4o</span><span class="sp">Claude Sonnet/Opus</span><span class="sp">IBM Granite</span><span class="sp">Llama 3.x</span><span class="sp">ReAct</span><span class="sp">DAG-Based Task Decomposition</span></div>
+      </div>
+      <div class="skill-pills-section">
+        <div class="skill-pills-title">RAG &amp; Knowledge Systems</div>
+        <div class="skill-pills"><span class="sp">HyDE-RAG</span><span class="sp">GraphRAG</span><span class="sp">BM25+Dense Hybrid</span><span class="sp">Cross-Encoder Reranking</span><span class="sp">Pinecone</span><span class="sp">Weaviate</span><span class="sp">FAISS</span><span class="sp">Neo4j</span><span class="sp">Amazon OpenSearch</span><span class="sp">RAGAS</span><span class="sp">Langfuse</span></div>
+      </div>
+      <div class="skill-pills-section">
+        <div class="skill-pills-title">LLM Fine-Tuning &amp; Alignment</div>
+        <div class="skill-pills"><span class="sp">LoRA / QLoRA</span><span class="sp">RLHF</span><span class="sp">DPO</span><span class="sp">PEFT</span><span class="sp">Hugging Face</span><span class="sp">FSDP / DeepSpeed</span><span class="sp">vLLM</span><span class="sp">GPTQ/AWQ</span></div>
+      </div>
+      <div class="skill-pills-section">
+        <div class="skill-pills-title">MLOps &amp; Infra</div>
+        <div class="skill-pills"><span class="sp">MLflow</span><span class="sp">Kubeflow</span><span class="sp">W&amp;B</span><span class="sp">Docker</span><span class="sp">Kubernetes/HPA</span><span class="sp">Helm</span><span class="sp">Terraform</span><span class="sp">Shadow Deployment</span><span class="sp">A/B Testing</span></div>
+      </div>
+      <div class="skill-pills-section">
+        <div class="skill-pills-title">Responsible AI &amp; Observability</div>
+        <div class="skill-pills"><span class="sp">SHAP/LIME</span><span class="sp">AIF360</span><span class="sp">Fairlearn</span><span class="sp">NeMo Guardrails</span><span class="sp">EU AI Act</span><span class="sp">GDPR/CCPA</span><span class="sp">Prometheus</span><span class="sp">Grafana</span><span class="sp">Arize AI</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CERTIFICATIONS ── -->
+<section id="certifications">
+  <div class="s-label">05 — Certifications</div>
+  <div class="s-title">Credentials that <em>back the depth.</em></div>
+  <div class="divider"></div>
+  <div class="cert-grid">
+    <div class="cert-item"><span class="cert-icon">🎓</span><div><div class="cert-inst">Stanford University</div><div class="cert-course">Machine Learning</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🏛</span><div><div class="cert-inst">Northwestern University</div><div class="cert-course">Analytics &amp; AI</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🔷</span><div><div class="cert-inst">IBM</div><div class="cert-course">AI Associate Data Scientist</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🔷</span><div><div class="cert-inst">IBM</div><div class="cert-course">Generative &amp; Agentic AI Foundation</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🔷</span><div><div class="cert-inst">IBM</div><div class="cert-course">Trustworthy AI &amp; AI Ethics</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🔷</span><div><div class="cert-inst">IBM</div><div class="cert-course">Solution Architect — Kubernetes &amp; Cloud Paks</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🦜</span><div><div class="cert-inst">LangChain Academy</div><div class="cert-course">LangGraph &amp; LangSmith</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🤗</span><div><div class="cert-inst">Hugging Face</div><div class="cert-course">AI Agents Fundamentals</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🟠</span><div><div class="cert-inst">Anthropic</div><div class="cert-course">Model Context Protocol: Advanced Topics</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🔶</span><div><div class="cert-inst">Databricks Academy</div><div class="cert-course">Generative AI Fundamentals</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🎓</span><div><div class="cert-inst">Duke University</div><div class="cert-course">DevOps, DataOps, MLOps</div></div></div>
+    <div class="cert-item"><span class="cert-icon">🔵</span><div><div class="cert-inst">Microsoft</div><div class="cert-course">Azure Machine Learning</div></div></div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="contact-wrap">
+    <div class="s-label" style="text-align:center">06 — Contact</div>
+    <h2 class="s-title" style="text-align:center">Ready to contribute <em>from day one.</em></h2>
+    <div class="divider" style="margin:0 auto 16px"></div>
+    <p style="font-size:15px;color:var(--ink2);line-height:1.7;">Open to Lead Data Scientist, GenAI Architect, and AI Engineering roles globally. If you need AI that ships, scales, and holds in production — let's talk.</p>
+    <div class="contact-cards">
+      <a href="mailto:chandaniitismg@gmail.com" class="contact-card">
+        <div class="contact-card-icon">✉️</div>
+        <div class="contact-card-label">Email</div>
+        <div class="contact-card-val">chandaniitismg@gmail.com</div>
+      </a>
+      <a href="https://www.linkedin.com/in/chandaniit" target="_blank" class="contact-card">
+        <div class="contact-card-icon">💼</div>
+        <div class="contact-card-label">LinkedIn</div>
+        <div class="contact-card-val">linkedin.com/in/chandaniit</div>
+      </a>
+      <a href="tel:+919199000200" class="contact-card">
+        <div class="contact-card-icon">📱</div>
+        <div class="contact-card-label">Phone</div>
+        <div class="contact-card-val">+91-9199000200</div>
+      </a>
+    </div>
+    <div style="display:flex;gap:14px;justify-content:center;margin-top:24px;">
+      <a href="mailto:chandaniitismg@gmail.com" class="btn-primary"><i class="fas fa-envelope"></i> Email Me Directly</a>
+      <a href="https://www.linkedin.com/in/chandaniit" target="_blank" class="btn-secondary"><i class="fab fa-linkedin"></i> LinkedIn Profile</a>
+    </div>
+    <div style="margin-top:36px;display:flex;flex-wrap:wrap;justify-content:center;gap:16px;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);">📍 <span>Bengaluru, India · Open to Global Roles</span></div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);">🏆 <span>Super 30 Alumni · IIT Graduate</span></div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);">⚡ <span>Available for interviews immediately</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-left">© 2026 Chandan Kumar · Lead Data Scientist · IBM Lab</div>
+  <div class="footer-right">
+    <a href="mailto:chandaniitismg@gmail.com"><i class="fas fa-envelope"></i> Email</a>
+    <a href="https://www.linkedin.com/in/chandaniit" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+    <a href="#home"><i class="fas fa-arrow-up"></i> Back to Top</a>
+  </div>
+</footer>
+
+<script>
+// Experience tab switcher
+function showExp(id, el) {
+  document.querySelectorAll('.exp-content').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.exp-tab').forEach(e => e.classList.remove('active'));
+  document.getElementById('exp-' + id).classList.add('active');
+  el.classList.add('active');
+}
+
+// Scroll fade-up
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+// Nav active highlight
+window.addEventListener('scroll', () => {
+  const sections = document.querySelectorAll('section[id]');
+  const scrollY = window.pageYOffset + 80;
+  sections.forEach(s => {
+    const top = s.offsetTop, h = s.offsetHeight;
+    const link = document.querySelector(`.nav-links a[href="#${s.id}"]`);
+    if(link) link.style.color = scrollY >= top && scrollY < top + h ? 'var(--teal)' : '';
+  });
+});
+</script>
+</body>
+</html>
